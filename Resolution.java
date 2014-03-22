@@ -16,9 +16,9 @@ class Resolution
 		//At this point, we return failure.
 
 		String[] testString1 = {"z", "y", "x"};
-		String[] testString2 = {"y", "w"};
+		String[] testString2 = {"y", "z", "x"};
 		boolean[] testBool1 = {true, false, true};
-		boolean[] testBool2 = {true, false};
+		boolean[] testBool2 = {true, true, true};
 		Clause testClause1 = new Clause(1, testString1, testBool1);
 		Clause testClause2 = new Clause(2, testString2, testBool2);
 		testClause1.resolution(testClause2, clauses); 
