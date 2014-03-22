@@ -22,11 +22,6 @@ class Clause
 		this.parents = parents;
 	}
 	
-	public int getID()
-	{
-		return ID;
-	}
-
 	//Takes in another clause and if it can be resolved, then it will add the produced clause to the clauseList. Returns true if there was no contradiction. False if there was.
 	public boolean resolution(Clause otherClause, LinkedList<Clause> clauseList)
 	{
@@ -50,13 +45,7 @@ class Clause
 
 					//Check for repeating literals and tautology
 					boolean isTaut = false; //is true if the clause is a tautology ( ~a V a )
-					boolean[] isARepeat = new boolean[otherClause.literal.length];
-					for(int k = 0; k < isARepeat.length; k++)
-					{
-						isARepeat[k] = false;
-					}
 					int numOfRepeatingLit = 0;
-
 					for(int k = 0; k < literal.length && !isTaut; k++)
 					{
 						for(int l = 0; l < otherClause.literal.length && !isTaut; l++)
@@ -69,7 +58,7 @@ class Clause
 									continue; //will result in breaking out of the loops
 								}
 								numOfRepeatingLit++;
-								isARepeat[l] = true; //Indicate that the literal in otherClause is repeatnig so it does not get added in the later loop
+								otherClause.literal[l] = ""; //Set the literal to "" so it does not get added in the later loop
 							}
 						}
 					}
@@ -92,7 +81,7 @@ class Clause
 						}
 						for(int k = 0; k < otherClause.literal.length; k++)
 						{
-							if(k != j && !isARepeat[k]) //if k is not the index of the removed literal and the literal is not indicated as repeating, then add literal to new clause
+							if(k != j && otherClause.literal[k] != "") //k is not the index of the removed literal and the literal is not indicated as repeating
 							{
 								newLiteral[newLiteralIndex] = otherClause.literal[k];
 								newNegated[newLiteralIndex] = otherClause.negated[k];
@@ -132,5 +121,11 @@ class Clause
 		outputStr += "}";
 
 		System.out.println(outputStr);
+	}
+	
+	//returns clause ID
+	public int getClauseID()
+	{
+		return this.ID;
 	}
 }

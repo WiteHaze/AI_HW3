@@ -103,12 +103,12 @@ class Resolution
 			Clause lastClause = expansionStack.pop();
 			boolean added = false;
 			
-			for(int clauseCount = 0; clauseCount < clauses.size()-1; clauseCount++)
+			for(int clauseCount = 0; clauseCount < lastClause.getClauseID()-1; clauseCount++)
 			{
 				//If any new clauses are added since last execution
-				if(!clauses.getLast().equals(lastClause))
+				//if(!clauses.getLast().equals(lastClause))
 				{
-					break;
+					//break;
 				}
 				
 				Clause tempClause = clauses.get(clauseCount);
