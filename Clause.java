@@ -33,6 +33,13 @@ class Clause
 				{
 					if(literal.length == 1 && otherClause.literal.length == 1) //If boths lengths are 1, then there is a contradiction
 					{
+						//Add dummy clause to clauseList so that it outputs "False" when the outputClause function is called
+						String[] dummyString = {"False"};
+						boolean[] dummyNegated = {false};
+						int[] newParents = {ID, otherClause.ID};
+						Clause dummyClause = new Clause(clauseList.size() + 1, dummyString, dummyNegated, newParents);
+						clauseList.add(dummyClause);
+
 						return false;
 					}
 
@@ -81,21 +88,38 @@ class Clause
 								newLiteralIndex++;
 							}
 						}
-						String outputStr = "";
-						for(int k = 0; k < newLiteral.length; k++)
-						{
-							if(newNegated[k])
-							{
-								outputStr += "~";
-							}
-							outputStr += (newLiteral[k] + " ");
-						}
-						System.out.println(outputStr);
+						//Create a new clause object and add it to the passed in linked list
+						int newParents[] = {ID, otherClause.ID};
+						Clause newClause = new Clause(clauseList.size() + 1, newLiteral, newNegated, newParents);
+						clauseList.add(newClause);
 					}
 				}
 			}
 		}
 
 		return true;
+	}
+	
+	//Prints to stdout the clause in the format specified by the assignment
+	public void outputClause()
+	{
+		String outputStr = "";
+		outputStr += (ID + ".  ");
+		for(int i = 0; i < literal.length; i++)
+		{
+			if(negated[i])
+			{
+				outputStr += "~";
+			}
+			outputStr += (literal[i] + " ");
+		}
+		outputStr += "  {";
+		if(parents[0] != -1) //if this clause has parents
+		{
+			outputStr += parents[0] + ", " + parents[1];
+		}
+		outputStr += "}";
+
+		System.out.println(outputStr);
 	}
 }
