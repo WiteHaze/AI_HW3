@@ -1,5 +1,5 @@
 ~p q
-~z y
+~z y x
 p
 z
-~y
+~y x
