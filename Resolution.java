@@ -98,7 +98,6 @@ class Resolution
 		
 		while(!expansionStack.isEmpty()) //Until the stack is empty
 		{
-			int numClausesBeforeExpansion = clauses.size();
 
 			Clause lastClause = expansionStack.pop();
 			boolean added = false;
@@ -117,6 +116,8 @@ class Resolution
 				System.out.print("Against: ");
 				tempClause.outputClause();
 				
+				int numClausesBeforeExpansion = clauses.size();
+				
 				boolean result = lastClause.resolution(tempClause, clauses);		
 				
 				if(!result)
@@ -131,6 +132,7 @@ class Resolution
 				//If new clauses are added, expand the newly added clause before expanding any other clause
 				if(numClausesAfterExpansion - numClausesBeforeExpansion > 0)
 				{
+					System.out.println("Clause " + clauses.size() + " is created.");
 					expansionStack.push(clauses.getLast());
 				}
 			}
