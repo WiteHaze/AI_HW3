@@ -17,7 +17,7 @@ class Resolution
 		//We stop when the resolution function returns "false", which means that the resolution found contradicting clauses. Otherwise, if the loop continues to completion, then every clause has been tested.
 		//At this point, we return failure.
 		
-		BufferedReader fileReader = new BufferedReader(new FileReader("task4.in"));
+		BufferedReader fileReader = new BufferedReader(new FileReader("simpletest.txt"));
 		
 		String line = fileReader.readLine();
 		int clauseCount = 1;
@@ -83,6 +83,7 @@ class Resolution
 		if(!resolve(clauses))
 		{
 			System.out.println("True. Reached a contradiction.");
+			printProofTree(clauses.getLast(), clauses);
 		}
 	}
 	
@@ -140,5 +141,33 @@ class Resolution
 		}
 		
 		return true;
+	}
+
+	public static void printProofTree(Clause finalClause, LinkedList<Clause> clauseList)
+	{
+		PriorityQueue<Integer> proofTree = new PriorityQueue<Integer>(); //Will be used to order the ancestors of the finalClause for output
+		LinkedList<Clause> treeQueue = new LinkedList<Clause>(); //Will take in the ancestors of the finalClause
+		int[] parentIDs;
+
+		treeQueue.add(finalClause);
+		while(!treeQueue.isEmpty())
+		{
+			Clause polledClause = treeQueue.poll();
+			proofTree.add(polledClause.getClauseID());
+			parentIDs = polledClause.getParentIDs();
+			if(parentIDs[0] != -1) //if one parent exists, the other must exist and we add the parents to the queue
+			{
+				treeQueue.add(clauseList.get(parentIDs[0]-1)); //add the first parent to the queue
+				treeQueue.add(clauseList.get(parentIDs[1]-1)); //add the second parent to the queue
+			}
+		}
+		
+
+		//output all the clauses in the proof tree
+		while(proofTree.peek() != null)
+		{
+			clauseList.get(proofTree.poll()-1).outputClause();
+		}
+		System.out.println("Size of final clause set:   " + clauseList.size());
 	}
 }

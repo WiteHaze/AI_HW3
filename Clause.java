@@ -128,4 +128,9 @@ class Clause
 	{
 		return this.ID;
 	}
+
+	public int[] getParentIDs()
+	{
+		return parents;
+	}
 }
