@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.*;
 
 class Resolution
@@ -14,8 +16,37 @@ class Resolution
 		//Example, linkedlist - before: <1 2 3>, after <1 2 3 4>. We would add 4 to the stack. Assuming 4 was added after resolving clause 3, the stack would be <4 2 1>, so we would resolve 4 next.
 		//We stop when the resolution function returns "false", which means that the resolution found contradicting clauses. Otherwise, if the loop continues to completion, then every clause has been tested.
 		//At this point, we return failure.
+		
+		BufferedReader fileReader = new BufferedReader(new FileReader("task4.in"));
+		
+		String line = fileReader.readLine();
+		int clauseCount = 1;
+		
+		while(line != null)
+		{
+			String[] literals = line.split(" ");
+			boolean[] literalValuesNegated = new boolean[literals.length];
+			
+			for(int literalCount = 0; literalCount < literals.length; literalCount++)
+			{
+				if(literals[literalCount].charAt(0) == '~')
+				{
+					literals[literalCount] = literals[literalCount].substring(1);
+					literalValuesNegated[literalCount] = true;
+				}
+				else
+				{
+					literalValuesNegated[literalCount] = false;
+				}
+			}
+		
+			clauses.add(new Clause(clauseCount, literals, literalValuesNegated));
+			clauseCount++;
+			line = fileReader.readLine();
+		}
 
-		String[] testString1 = {"z", "y", "x"};
+		
+		/*String[] testString1 = {"z", "y", "x"};
 		String[] testString2 = {"y", "z", "x"};
 		boolean[] testBool1 = {true, false, true};
 		boolean[] testBool2 = {true, true, true};
@@ -33,6 +64,79 @@ class Resolution
 		testClause3.resolution(testClause4, clauses);
 		resultClause = clauses.get(1);
 		resultClause.outputClause();
-		System.out.println("End");
+		System.out.println("End");*/
+		
+		/*String[] testString1 = {"z", "y", "x"};
+		String[] testString2 = {"y", "z", "x"};
+		boolean[] testBool1 = {true, false, true};
+		boolean[] testBool2 = {true, true, true};
+		clauses.add(new Clause(1, testString1, testBool1));
+		clauses.add(new Clause(2, testString2, testBool2));*/
+		
+		/*String[] testString1 = {"z"};
+		String[] testString2 = {"z"};
+		boolean[] testBool1 = {true};
+		boolean[] testBool2 = {false};
+		clauses.add(new Clause(1, testString1, testBool1));
+		clauses.add(new Clause(2, testString2, testBool2));*/
+		
+		if(!resolve(clauses))
+		{
+			System.out.println("True. Reached a contradiction.");
+		}
+	}
+	
+	public static boolean resolve(LinkedList<Clause> clauses)
+	{
+		//Storing onto the stack to verify clauses in reverse order
+		Stack<Clause> expansionStack = new Stack<Clause>();
+		
+		for(int count = 0; count < clauses.size(); count++)
+		{
+			expansionStack.add(clauses.get(count));
+		}
+		
+		while(!expansionStack.isEmpty()) //Until the stack is empty
+		{
+			int numClausesBeforeExpansion = clauses.size();
+
+			Clause lastClause = expansionStack.pop();
+			boolean added = false;
+			
+			for(int clauseCount = 0; clauseCount < clauses.size()-1; clauseCount++)
+			{
+				//If any new clauses are added since last execution
+				if(!clauses.getLast().equals(lastClause))
+				{
+					break;
+				}
+				
+				Clause tempClause = clauses.get(clauseCount);
+				System.out.print("Expanding: ");
+				lastClause.outputClause();
+				System.out.print("Against: ");
+				tempClause.outputClause();
+				
+				boolean result = lastClause.resolution(tempClause, clauses);		
+				
+				if(!result)
+				{
+					return false;
+				}
+				
+				int numClausesAfterExpansion = clauses.size();
+				
+				//System.out.println(numClausesAfterExpansion - numClausesBeforeExpansion); //Size does not change
+				
+				//If new clauses are added, expand the newly added clause before expanding any other clause
+				if(numClausesAfterExpansion - numClausesBeforeExpansion > 0)
+				{
+					expansionStack.push(clauses.getLast());
+				}
+			}
+			
+		}
+		
+		return true;
 	}
 }
