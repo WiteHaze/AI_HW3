@@ -94,10 +94,54 @@ class Clause
 								newLiteralIndex++;
 							}
 						}
-						//Create a new clause object and add it to the passed in linked list
-						int newParents[] = {ID, otherClause.ID};
-						Clause newClause = new Clause(clauseList.size() + 1, newLiteral, newNegated, newParents);
-						clauseList.add(newClause);
+						//Create a new clause object and add it to the passed in linked list if there is not a duplicate clause
+						boolean isDup = false;
+						String[] newLiteralExact = new String[newLiteral.length]; //is the same as newLiteral except a "~" will be appended if it is negated
+						HashSet<String> newLitSet = new HashSet<String>(Arrays.asList(newLiteral)); //newLiteral in HashSet form to compare to the rest of the clauses literals
+						HashSet<String> newLitExactSet;
+						for(int k = 0; k < newLiteralExact.length; k++)
+						{
+							if(newNegated[k]) //if the literal is negated, then append "~"
+							{
+								newLiteralExact[k] = ("~" + newLiteral[k]);
+							}
+							else
+							{
+								newLiteralExact[k] = newLiteral[k];
+							}
+						}
+						newLitExactSet = new HashSet<String>(Arrays.asList(newLiteralExact));
+						for(int k = 0; k < clauseList.size() && !isDup; k++) //Loop through the clauseList and check for duplicates
+						{
+							Clause clause2 = clauseList.get(k);
+							//checks to see if the lengths of the string arrays are the same, then check to see if the elements in each array are the same using HashSet
+							if(newLiteral.length == clause2.literal.length && newLitSet.equals(new HashSet<String>(Arrays.asList(clause2.literal))))
+							{
+								//if the literals are the same, we now need to check if the negations are the same
+								String[] clauseLiteralExact = new String[clause2.literal.length];
+								for(int l = 0; l < clauseLiteralExact.length; l++) //create the clauseLiteralExact string array
+								{
+									if(clause2.negated[l])
+									{
+										clauseLiteralExact[l] = ("~" + clause2.literal[l]);
+									}
+									else
+									{
+										clauseLiteralExact[l] = clause2.literal[l];
+									}
+								}
+								if(newLitExactSet.equals(new HashSet<String>(Arrays.asList(clauseLiteralExact)))) //if the literals with the negations appended are the same
+								{
+									isDup = true;
+								}
+							}
+						}
+						if(!isDup)
+						{
+							int newParents[] = {ID, otherClause.ID};
+							Clause newClause = new Clause(clauseList.size() + 1, newLiteral, newNegated, newParents);
+							clauseList.add(newClause);
+						}
 					}
 				}
 			}

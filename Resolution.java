@@ -134,6 +134,7 @@ class Resolution
 				if(numClausesAfterExpansion - numClausesBeforeExpansion > 0)
 				{
 					System.out.println("Clause " + clauses.size() + " is created.");
+					clauses.getLast().outputClause();
 					expansionStack.push(clauses.getLast());
 				}
 			}
