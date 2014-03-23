@@ -17,7 +17,7 @@ class Resolution
 		//We stop when the resolution function returns "false", which means that the resolution found contradicting clauses. Otherwise, if the loop continues to completion, then every clause has been tested.
 		//At this point, we return failure.
 		
-		BufferedReader fileReader = new BufferedReader(new FileReader("simpletest.txt"));
+		BufferedReader fileReader = new BufferedReader(new FileReader("task4.in"));
 		
 		String line = fileReader.readLine();
 		int clauseCount = 1;
@@ -90,7 +90,7 @@ class Resolution
 	public static boolean resolve(LinkedList<Clause> clauses)
 	{
 		//Storing onto the stack to verify clauses in reverse order
-		Stack<Clause> expansionStack = new Stack<Clause>();
+		LinkedList<Clause> expansionStack = new LinkedList<Clause>();
 		
 		for(int count = 0; count < clauses.size(); count++)
 		{
@@ -100,7 +100,7 @@ class Resolution
 		while(!expansionStack.isEmpty()) //Until the stack is empty
 		{
 
-			Clause lastClause = expansionStack.pop();
+			Clause lastClause = expansionStack.poll();
 			boolean added = false;
 			
 			for(int clauseCount = 0; clauseCount < lastClause.getClauseID()-1; clauseCount++)
@@ -135,7 +135,7 @@ class Resolution
 				{
 					System.out.println("Clause " + clauses.size() + " is created.");
 					clauses.getLast().outputClause();
-					expansionStack.push(clauses.getLast());
+					expansionStack.add(clauses.getLast());
 				}
 			}
 			

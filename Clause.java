@@ -183,4 +183,9 @@ class Clause
 	{
 		return parents;
 	}
+
+	public int getNumOfLiterals()
+	{
+		return literal.length;
+	}
 }
