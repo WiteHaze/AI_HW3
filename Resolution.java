@@ -80,27 +80,33 @@ class Resolution
 		clauses.add(new Clause(1, testString1, testBool1));
 		clauses.add(new Clause(2, testString2, testBool2));*/
 		
-		if(!resolve(clauses))
+		Resolution resolution = new Resolution();
+		if(!resolution.resolve(clauses)) //if the resolution results in false being generated
 		{
 			System.out.println("True. Reached a contradiction.");
-			printProofTree(clauses.getLast(), clauses);
+			resolution.printProofTree(clauses.getLast(), clauses);
 		}
 	}
 	
-	public static boolean resolve(LinkedList<Clause> clauses)
+	public Resolution()
+	{
+	}
+
+	public boolean resolve(LinkedList<Clause> clauses)
 	{
 		//Storing onto the stack to verify clauses in reverse order
-		LinkedList<Clause> expansionStack = new LinkedList<Clause>();
-		
+		//LinkedList<Clause> expansionStack = new LinkedList<Clause>();
+		PriorityQueue<Clause> expansionQueue = new PriorityQueue<Clause>(10000, new ClauseSizeComparator());
+
 		for(int count = 0; count < clauses.size(); count++)
 		{
-			expansionStack.add(clauses.get(count));
+			expansionQueue.add(clauses.get(count));
 		}
 		
-		while(!expansionStack.isEmpty()) //Until the stack is empty
+		while(!expansionQueue.isEmpty()) //Until the stack is empty
 		{
 
-			Clause lastClause = expansionStack.poll();
+			Clause lastClause = expansionQueue.poll();
 			boolean added = false;
 			
 			for(int clauseCount = 0; clauseCount < lastClause.getClauseID()-1; clauseCount++)
@@ -135,7 +141,7 @@ class Resolution
 				{
 					System.out.println("Clause " + clauses.size() + " is created.");
 					clauses.getLast().outputClause();
-					expansionStack.add(clauses.getLast());
+					expansionQueue.add(clauses.getLast());
 				}
 			}
 			
@@ -144,7 +150,7 @@ class Resolution
 		return true;
 	}
 
-	public static void printProofTree(Clause finalClause, LinkedList<Clause> clauseList)
+	public void printProofTree(Clause finalClause, LinkedList<Clause> clauseList)
 	{
 		PriorityQueue<Integer> proofTree = new PriorityQueue<Integer>(); //Will be used to order the ancestors of the finalClause for output
 		LinkedList<Clause> treeQueue = new LinkedList<Clause>(); //Will take in the ancestors of the finalClause
@@ -170,5 +176,20 @@ class Resolution
 			clauseList.get(proofTree.poll()-1).outputClause();
 		}
 		System.out.println("Size of final clause set:   " + clauseList.size());
+	}
+
+	class ClauseSizeComparator implements Comparator<Clause>
+	{
+		public int compare(Clause clause1, Clause clause2)
+		{
+			if(clause1.getNumOfLiterals() < clause2.getNumOfLiterals())
+			{
+				return -1;
+			}
+			else
+			{
+				return 1;
+			}
+		}
 	}
 }
