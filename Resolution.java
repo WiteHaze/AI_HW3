@@ -7,7 +7,6 @@ class Resolution
 	public static void main(String [] args) throws Exception
 	{
 		LinkedList<Clause> clauses = new LinkedList<Clause>(); //the list of the clauses
-		PriorityQueue<Integer> clauseTree = new PriorityQueue<Integer>();
 
 		//Read files and add the corresponding clauses to the linkedlist
 		//call the resolution function on each clause against all other clauses above it. start with the clause on the bottom. O(n^2) calls.
@@ -17,8 +16,17 @@ class Resolution
 		//We stop when the resolution function returns "false", which means that the resolution found contradicting clauses. Otherwise, if the loop continues to completion, then every clause has been tested.
 		//At this point, we return failure.
 		
-		BufferedReader fileReader = new BufferedReader(new FileReader("task4.in"));
-		
+		BufferedReader fileReader;
+
+		if(args.length != 1)
+		{
+			System.out.println("Wrong input parameters!");
+			System.out.println("Format:");
+			System.out.println("java Resolution <inputfile>");
+			System.exit(0);
+		}
+
+		fileReader = new BufferedReader(new FileReader(args[0]));
 		String line = fileReader.readLine();
 		int clauseCount = 1;
 		
@@ -153,13 +161,18 @@ class Resolution
 	public void printProofTree(Clause finalClause, LinkedList<Clause> clauseList)
 	{
 		PriorityQueue<Integer> proofTree = new PriorityQueue<Integer>(); //Will be used to order the ancestors of the finalClause for output
-		LinkedList<Clause> treeQueue = new LinkedList<Clause>(); //Will take in the ancestors of the finalClause
+		LinkedList<Clause> treeQueue = new LinkedList<Clause>(); //Will take in the ancestors of the finalClause. Dequeue each element, add it to the proofTree, then add the parents to the queue
 		int[] parentIDs;
 
 		treeQueue.add(finalClause);
 		while(!treeQueue.isEmpty())
 		{
 			Clause polledClause = treeQueue.poll();
+			
+			if(proofTree.contains(polledClause.getClauseID())) //Skip this iteration if the clause has already been added to the proofTree
+			{
+				continue;
+			}
 			proofTree.add(polledClause.getClauseID());
 			parentIDs = polledClause.getParentIDs();
 			if(parentIDs[0] != -1) //if one parent exists, the other must exist and we add the parents to the queue
