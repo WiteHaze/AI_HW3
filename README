@@ -1,0 +1,9 @@
+Members: Anthony Tran, Goutham Gandham
+
+Development Platform: Linux
+
+To compile:
+javac Resolution.java Clause.java
+
+To run:
+java Resolution <inputfile>
