@@ -91,9 +91,13 @@ class Resolution
 		Resolution resolution = new Resolution();
 		if(!resolution.resolve(clauses)) //if the resolution results in false being generated
 		{
-			System.out.println("True. Reached a contradiction.");
 			resolution.printProofTree(clauses.getLast(), clauses);
 		}
+		else
+		{
+			System.out.println("Failure");
+		}
+		System.out.println("Size of final clause set:   " + clauses.size());
 	}
 	
 	public Resolution()
@@ -115,7 +119,6 @@ class Resolution
 		{
 
 			Clause lastClause = expansionQueue.poll();
-			boolean added = false;
 			
 			for(int clauseCount = 0; clauseCount < lastClause.getClauseID()-1; clauseCount++)
 			{
@@ -126,13 +129,7 @@ class Resolution
 				}
 				
 				Clause tempClause = clauses.get(clauseCount);
-				System.out.print("Expanding: ");
-				lastClause.outputClause();
-				System.out.print("Against: ");
-				tempClause.outputClause();
-				
 				int numClausesBeforeExpansion = clauses.size();
-				
 				boolean result = lastClause.resolution(tempClause, clauses);		
 				
 				if(!result)
@@ -147,8 +144,6 @@ class Resolution
 				//If new clauses are added, expand the newly added clause before expanding any other clause
 				if(numClausesAfterExpansion - numClausesBeforeExpansion > 0)
 				{
-					System.out.println("Clause " + clauses.size() + " is created.");
-					clauses.getLast().outputClause();
 					expansionQueue.add(clauses.getLast());
 				}
 			}
@@ -188,7 +183,6 @@ class Resolution
 		{
 			clauseList.get(proofTree.poll()-1).outputClause();
 		}
-		System.out.println("Size of final clause set:   " + clauseList.size());
 	}
 
 	class ClauseSizeComparator implements Comparator<Clause>
